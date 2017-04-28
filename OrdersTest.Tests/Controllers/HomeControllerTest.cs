@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OrdersTest;
 using OrdersTest.Controllers;
+using Xunit;
+using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace OrdersTest.Tests.Controllers
 {
-    [TestClass]
     public class HomeControllerTest
     {
-        [TestMethod]
+        [Fact]
         public void Index()
         {
             // Arrange
@@ -25,27 +25,27 @@ namespace OrdersTest.Tests.Controllers
             Assert.IsNotNull(result);
         }
 
-        [TestMethod]
-        public void About()
+        [Fact]
+        public void UnexpectedError()
         {
             // Arrange
             HomeController controller = new HomeController();
 
             // Act
-            ViewResult result = controller.About() as ViewResult;
+            ViewResult result = controller.UnexpectedError() as ViewResult;
 
             // Assert
-            Assert.AreEqual("Your application description page.", result.ViewBag.Message);
+            Assert.IsNotNull(result);
         }
 
-        [TestMethod]
-        public void Contact()
+        [Fact]
+        public void NotFound()
         {
             // Arrange
             HomeController controller = new HomeController();
 
             // Act
-            ViewResult result = controller.Contact() as ViewResult;
+            ActionResult result = controller.NotFound() as ActionResult;
 
             // Assert
             Assert.IsNotNull(result);

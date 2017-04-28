@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -12,18 +13,16 @@ namespace OrdersTest.Controllers
         {
             return View();
         }
-
-        public ActionResult About()
+        
+        public ActionResult UnexpectedError()
         {
-            ViewBag.Message = "Your application description page.";
-
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult NotFound()
         {
-            ViewBag.Message = "Your contact page.";
-
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
             return View();
         }
     }

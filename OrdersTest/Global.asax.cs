@@ -16,6 +16,16 @@ namespace OrdersTest
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            IocContainer.Setup();
+        }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception exception = Server.GetLastError();
+            // TODO: log the exception
+            Server.ClearError();
+            Response.Redirect("/Home/UnexpectedError");
         }
     }
 }

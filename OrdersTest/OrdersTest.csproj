@@ -204,18 +204,24 @@
     <Compile Include="DataAccess\IProcurementRepository.cs" />
     <Compile Include="DataAccess\IRepository.cs" />
     <Compile Include="DataAccess\IUnitOfWork.cs" />
+    <Compile Include="DataAccess\IUserProcurementRepository.cs" />
     <Compile Include="DataAccess\OrdersTestContext.cs" />
-    <Compile Include="DataAccess\OrderTestDBInitializer.cs" />
     <Compile Include="DataAccess\ProcurementRepository.cs" />
     <Compile Include="DataAccess\RepositoryBase.cs" />
     <Compile Include="DataAccess\UnitOfWork.cs" />
     <Compile Include="DataAccess\UnitOfWorkAttribute.cs" />
+    <Compile Include="DataAccess\UserProcurement.cs" />
+    <Compile Include="DataAccess\UserProcurementRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="IocContainer.cs" />
+    <Compile Include="Migrations\201704292224085_Init.cs" />
+    <Compile Include="Migrations\201704292224085_Init.Designer.cs">
+      <DependentUpon>201704292224085_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="DataAccess\Procurement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -271,6 +277,9 @@
     <Content Include="Scripts\angular-touch.min.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\app.js" />
+    <Content Include="Scripts\dirPagination.js" />
+    <Content Include="Scripts\dirPagination.tpl.html" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="Scripts\angular-touch.min.js.map" />
@@ -1063,10 +1072,10 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Scripts\version.json" />
+    <Content Include="Views\Procurement\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Procurement\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -1076,6 +1085,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201704292224085_Init.resx">
+      <DependentUpon>201704292224085_Init.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

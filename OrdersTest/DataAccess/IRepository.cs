@@ -16,7 +16,7 @@ namespace OrdersTest.DataAccess
         T GetById(TId id);
         T Get(Expression<Func<T, bool>> where);
         void Commit();
-        IEnumerable<T> GetAll();
-        IEnumerable<T> GetMany(Expression<Func<T, bool>> where);
+        IQueryable<T> GetAll();
+        IQueryable<T> GetMany(Expression<Func<T, bool>> where);
     }
 }

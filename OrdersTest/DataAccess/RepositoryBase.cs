@@ -47,14 +47,14 @@ namespace OrdersTest.DataAccess
             return dbSet.Find(id);
         }
 
-        public virtual IEnumerable<T> GetAll()
+        public virtual IQueryable<T> GetAll()
         {
-            return dbSet.ToList();
+            return dbSet;
         }
 
-        public virtual IEnumerable<T> GetMany(Expression<Func<T, bool>> where)
+        public virtual IQueryable<T> GetMany(Expression<Func<T, bool>> where)
         {
-            return dbSet.Where(where).ToList();
+            return dbSet.Where(where);
         }
 
         // TODO: this should be moved somewhere else, as it's not a repository's job. Possibly UnitOfWork pattern.

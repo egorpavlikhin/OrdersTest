@@ -10,7 +10,7 @@ namespace OrdersTest.DataAccess
         {
         }
 
-        [Key, Column(Order = 0)]
+        [Key, Index, Column(Order = 0)]
         public string UserId { get; set; }
 
         [Key, Column(Order = 1), ForeignKey("Procurement")]

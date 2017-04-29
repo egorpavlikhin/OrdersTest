@@ -51,6 +51,7 @@ namespace OrdersTest.Migrations
                     })
                 .PrimaryKey(t => new { t.UserId, t.ProcurementId })
                 .ForeignKey("dbo.Procurements", t => t.ProcurementId, cascadeDelete: true)
+                .Index(t => t.UserId)
                 .Index(t => t.ProcurementId);
             
             CreateTable(
@@ -111,6 +112,7 @@ namespace OrdersTest.Migrations
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.UserProcurements", new[] { "ProcurementId" });
+            DropIndex("dbo.UserProcurements", new[] { "UserId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");

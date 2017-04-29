@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using System.Web.Mvc.Async;
+using Castle.MicroKernel;
 using Castle.Windsor;
 
 namespace OrdersTest
 {
-    public class WindsorActionInvoker : ControllerActionInvoker
+    public class WindsorActionInvoker : AsyncControllerActionInvoker
     {
-        readonly IWindsorContainer container;
+        readonly IKernel Kernel;
 
-        public WindsorActionInvoker(IWindsorContainer container)
+        public WindsorActionInvoker(IKernel kernel)
         {
-            this.container = container;
+            this.Kernel = kernel;
         }
 
         protected override ActionExecutedContext InvokeActionMethodWithFilters(
@@ -21,7 +23,7 @@ namespace OrdersTest
         {
             foreach (IActionFilter actionFilter in filters)
             {
-                container.Kernel.InjectProperties(actionFilter);
+                Kernel.InjectProperties(actionFilter);
             }
             return base.InvokeActionMethodWithFilters(controllerContext, filters, actionDescriptor, parameters);
         }

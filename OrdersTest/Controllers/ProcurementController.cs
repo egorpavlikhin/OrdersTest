@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
@@ -23,8 +24,19 @@ namespace OrdersTest.Controllers
         // GET: Procurement
         public ActionResult Index()
         {
-            User.Identity.GetUserId();
             return View();
+        }
+
+        public async Task<JsonResult> List(int itemsPerPage, int pageNumber)
+        {
+            string userId = User.Identity.GetUserId();
+            var procurementList = userProcurementRepository.GetByUserId(userId, (pageNumber - 1) * itemsPerPage, itemsPerPage);
+            int count = await userProcurementRepository.CountAsync(userId);
+
+            var jsonResult = Json(new { Items = procurementList, Count = count }, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+
+            return jsonResult;
         }
 
         // GET: Procurement/Details/5

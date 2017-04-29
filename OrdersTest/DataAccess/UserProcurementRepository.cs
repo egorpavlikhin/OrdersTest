@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OrdersTest.DataAccess
 {
@@ -18,7 +19,7 @@ namespace OrdersTest.DataAccess
 
         public IEnumerable<Procurement> GetByUserId(string userId, int skip = 0, int count = 0)
         {
-            var query = base.GetMany(x => x.UserId == userId).Select(x => x.Procurement).AsNoTracking();
+            var query = base.GetMany(x => x.UserId == userId).OrderByDescending(x => x.ProcurementId).Select(x => x.Procurement).AsNoTracking();
 
             if (skip == 0 && count == 0)
                 return query.ToList();
@@ -31,6 +32,11 @@ namespace OrdersTest.DataAccess
             {
                 throw new ArgumentException("count must be greater than 0, if skip parameter is set.");
             }
+        }
+
+        public Task<int> CountAsync(string userId)
+        {
+            return base.GetMany(x => x.UserId == userId).CountAsync();
         }
     }
 }

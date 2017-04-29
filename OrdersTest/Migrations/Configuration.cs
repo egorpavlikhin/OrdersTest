@@ -30,9 +30,11 @@ namespace OrdersTest.Migrations
             {
                 var user = new ApplicationUser()
                 {
-                    UserName = string.Format("User{0}", i.ToString())
+                    UserName = $"user{i}@gmail.com",
+                    Email = $"user{i}@gmail.com",
+                    EmailConfirmed = true
                 };
-                manager.Create(user, string.Format("Password{0}", i.ToString()));
+                manager.Create(user, $"Password{i}");
             }
 
             context.Configuration.AutoDetectChangesEnabled = false;
@@ -48,7 +50,7 @@ namespace OrdersTest.Migrations
 
             foreach (var procurement in procurements)
             {
-                context.UserProcurements.Add(new UserProcurement { UserId = manager.FindByName("User1").Id, Procurement = procurement });
+                context.UserProcurements.Add(new UserProcurement { UserId = manager.FindByName("user1@gmail.com").Id, Procurement = procurement });
             }
 
             base.Seed(context);

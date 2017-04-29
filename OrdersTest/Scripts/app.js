@@ -1,17 +1,34 @@
-﻿var app = angular.module('angularTable', ['angularUtils.directives.dirPagination']);
-app.controller('listdata',function($http){
-    var vm = this;
-    vm.procurements = []; //declare an empty array
-    vm.pageno = 1; // initialize page no to 1
-    vm.total_count = 0;
-    vm.itemsPerPage = 10; //this could be a dynamic value from a drop down
-    vm.getData = function(pageno){ // This would fetch the data on page change.
-        //In practice this should be in a factory.
-        vm.users = [];  $http.get("/procurement/list/{itemsPerPage}/{pagenumber}").success(function(response){ 
-            //ajax request to fetch data into vm.data
-            vm.users = response.data;  // data to be displayed on current page.
-            vm.total_count = response.total_count; // total data count.
-        });
+﻿angular.module("ordersTest", []);
+var app = angular.module('ordersTest', ['angularUtils.directives.dirPagination']);
+app.filter('ctime', function () {
+    return function (jsonDate) {
+
+        var date = new Date(parseInt(jsonDate.substr(6)));
+        return date;
     };
-    vm.getData(vm.pageno); // Call the function to fetch initial data on page load.
+});
+app.controller('listProcurements', function ($scope, $http){
+    $scope.procurements = []; //declare an empty array
+    $scope.pageno = 1; // initialize page no to 1
+    $scope.total_count = 0;
+    $scope.itemsPerPage = 20; //this could be a dynamic value from a drop down
+
+    getResultsPage(1);
+
+    $scope.pagination = {
+        current: 1
+    };
+
+    $scope.pageChanged = function (newPage) {
+        getResultsPage(newPage);
+    };
+
+    function getResultsPage(pageNumber) {
+        // this is just an example, in reality this stuff should be in a service
+        $http.get('/procurement/list/?pageNumber=' + pageNumber + '&itemsPerPage=' + $scope.itemsPerPage)
+            .then(function (result) {
+                $scope.procurements = result.data.Items;
+                $scope.total_count = result.data.Count;
+            });
+    }
 });

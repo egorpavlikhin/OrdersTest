@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using OrdersTest.DataAccess;
+using OrdersTest.Models;
 
 namespace OrdersTest.Controllers
 {
@@ -27,6 +30,24 @@ namespace OrdersTest.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<JsonResult> Index(long id)
+        {
+            string userId = User.Identity.GetUserId();
+            var procurement = await userProcurementRepository.GetById(userId, id);
+            if (procurement == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { });
+            }
+
+            var jsonResult = Json(new { Item = procurement }, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+
+            return jsonResult;
+        }
+
+        [HttpGet]
         public async Task<JsonResult> List(int itemsPerPage, int pageNumber)
         {
             string userId = User.Identity.GetUserId();
@@ -39,76 +60,63 @@ namespace OrdersTest.Controllers
             return jsonResult;
         }
 
-        // GET: Procurement/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Procurement/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Procurement/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        [UnitOfWork]
+        public async Task<JsonResult> Index(ProcurementViewModel model)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                // TODO: Add insert logic here
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { });
+            }
 
-                return RedirectToAction("Index");
-            }
-            catch
+            string userId = User.Identity.GetUserId();
+            var procurement = new Procurement
             {
-                return View();
-            }
+                Name = model.Name,
+                Description = model.Description,
+                Total = model.Total
+            };
+
+            var userProcurement = new UserProcurement {UserId = userId, Procurement = procurement};
+
+            procurementRepository.Add(procurement);
+            userProcurementRepository.Add(userProcurement);
+
+            var jsonResult = Json(new { Item = procurement }, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+
+            return jsonResult;
         }
 
-        // GET: Procurement/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPut]
+        [UnitOfWork]
+        public async Task<JsonResult> Index(long id, ProcurementViewModel model)
         {
-            return View();
-        }
-
-        // POST: Procurement/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
+            if (!ModelState.IsValid)
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { });
             }
-            catch
+
+            string userId = User.Identity.GetUserId();
+            var procurement = procurementRepository.GetById(id);
+            if (procurement == null)
             {
-                return View();
+                Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Json(new { });
             }
-        }
 
-        // GET: Procurement/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            procurement.Name = model.Name;
+            procurement.Description = model.Description;
+            procurement.Total = model.Total;
 
-        // POST: Procurement/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
+            procurementRepository.Update(procurement);
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            var jsonResult = Json(new { Item = procurement }, JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+
+            return jsonResult;
         }
     }
 }

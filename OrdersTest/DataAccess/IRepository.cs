@@ -15,6 +15,7 @@ namespace OrdersTest.DataAccess
         void Delete(Expression<Func<T, bool>> where);
         T GetById(TId id);
         T Get(Expression<Func<T, bool>> where);
+        Task<T> GetAsync(Expression<Func<T, bool>> where);
         void Commit();
         IQueryable<T> GetAll();
         IQueryable<T> GetMany(Expression<Func<T, bool>> where);

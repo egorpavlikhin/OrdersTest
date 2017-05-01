@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using System.Web;
 using OrdersTest.DataAccess;
 
@@ -66,6 +67,11 @@ namespace OrdersTest.DataAccess
         public T Get(Expression<Func<T, bool>> where)
         {
             return dbSet.Where(where).FirstOrDefault<T>();
+        }
+
+        public Task<T> GetAsync(Expression<Func<T, bool>> where)
+        {
+            return dbSet.Where(where).FirstOrDefaultAsync<T>();
         }
     }
 }

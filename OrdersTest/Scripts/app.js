@@ -23,6 +23,25 @@ app.controller('listProcurements', function ($scope, $http){
         getResultsPage(newPage);
     };
 
+    $scope.saveAdd = function () {
+        $http.post('procurement/create', $scope.form).then(function(data) {
+            $scope.procurements.push(data);
+            $(".modal").modal("hide");
+        });
+    };
+    $scope.edit = function(id) {
+        $http.get('procurement/' + id).then(function(data) {
+            console.log(data);
+            $scope.form = data;
+        });
+    };
+    $scope.saveEdit = function() {
+        $http.put('procurement/' + $scope.form.id, $scope.form).then(function(data) {
+            $(".modal").modal("hide");
+            $scope.procurements = apiModifyTable($scope.data, data.id, data);
+        });
+    };
+
     function getResultsPage(pageNumber) {
         // this is just an example, in reality this stuff should be in a service
         $http.get('/procurement/list/?pageNumber=' + pageNumber + '&itemsPerPage=' + $scope.itemsPerPage)

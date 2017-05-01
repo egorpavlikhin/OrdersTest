@@ -34,6 +34,13 @@ namespace OrdersTest.DataAccess
             }
         }
 
+        public async Task<Procurement> GetById(string userId, long procurementId)
+        {
+            var result = await base.GetAsync(x => x.UserId == userId && x.ProcurementId == procurementId).ConfigureAwait(false);
+
+            return result?.Procurement;
+        }
+
         public Task<int> CountAsync(string userId)
         {
             return base.GetMany(x => x.UserId == userId).CountAsync();

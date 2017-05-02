@@ -36,7 +36,8 @@ namespace OrdersTest.DataAccess
 
         public async Task<Procurement> GetById(string userId, long procurementId)
         {
-            var result = await base.GetAsync(x => x.UserId == userId && x.ProcurementId == procurementId).ConfigureAwait(false);
+            var result = await GetMany(x => x.UserId == userId && x.ProcurementId == procurementId).Include(x => x.Procurement)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
 
             return result?.Procurement;
         }

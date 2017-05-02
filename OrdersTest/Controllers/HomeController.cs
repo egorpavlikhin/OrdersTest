@@ -11,7 +11,7 @@ namespace OrdersTest.Controllers
     {
         public ActionResult Index()
         {
-            return Redirect("/Procurement/Index");
+            return Redirect("/Procurement/List");
         }
         
         public ActionResult UnexpectedError()

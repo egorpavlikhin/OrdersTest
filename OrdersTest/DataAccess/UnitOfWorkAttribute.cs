@@ -1,5 +1,8 @@
 ﻿using System;
-using System.Web.Mvc;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Controllers;
+using System.Web.Http.Filters;
 
 namespace OrdersTest.DataAccess
 {
@@ -7,19 +10,22 @@ namespace OrdersTest.DataAccess
     {
         public IUnitOfWork UnitOfWork { get; set; }
 
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        public override void OnActionExecuting(HttpActionContext actionContext)
         {
+            UnitOfWork = actionContext.Request.GetDependencyScope().GetService(typeof(IUnitOfWork)) as IUnitOfWork;
+            UnitOfWork.BeginTransaction();
         }
 
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
+        public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
         {
-            try
+            UnitOfWork = actionExecutedContext.Request.GetDependencyScope().GetService(typeof(IUnitOfWork)) as IUnitOfWork;
+            if (actionExecutedContext.Exception == null)
             {
-                this.UnitOfWork.Commit();
+                UnitOfWork.Commit();
             }
-            finally
+            else
             {
-                
+                UnitOfWork.Rollback();
             }
         }
     }

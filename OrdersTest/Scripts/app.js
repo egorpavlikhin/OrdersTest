@@ -24,30 +24,38 @@ app.controller('listProcurements', function ($scope, $http){
     };
 
     $scope.saveAdd = function () {
-        $http.post('procurement/create', $scope.form).then(function(data) {
-            $scope.procurements.push(data);
+        $http.post('/api/procurement/create', $scope.form).then(function (response) {
+            $scope.procurements.push(response.data);
             $(".modal").modal("hide");
         });
     };
     $scope.edit = function(id) {
-        $http.get('procurement/' + id).then(function(data) {
-            console.log(data);
-            $scope.form = data;
+        $http.get('/api/procurement/' + id).then(function(response) {
+            console.log(response);
+            $scope.form = response.data;
         });
     };
     $scope.saveEdit = function() {
-        $http.put('procurement/' + $scope.form.id, $scope.form).then(function(data) {
+        $http.put('/api/procurement/' + $scope.form.id, $scope.form).then(function (response) {
             $(".modal").modal("hide");
-            $scope.procurements = apiModifyTable($scope.data, data.id, data);
+            $scope.procurements = apiModifyTable($scope.data, response.data.id, response.data);
         });
     };
 
     function getResultsPage(pageNumber) {
         // this is just an example, in reality this stuff should be in a service
-        $http.get('/procurement/list/?pageNumber=' + pageNumber + '&itemsPerPage=' + $scope.itemsPerPage)
+        $http.get('/api/procurement/' + $scope.itemsPerPage + '/' + pageNumber)
             .then(function (result) {
                 $scope.procurements = result.data.Items;
                 $scope.total_count = result.data.Count;
             });
     }
 });
+function apiModifyTable(originalData, id, response) {
+    angular.forEach(originalData, function (item, key) {
+        if (item.id == id) {
+            originalData[key] = response;
+        }
+    });
+    return originalData;
+}

@@ -29,11 +29,6 @@ namespace OrdersTest
 
             var controller = (Controller)_kernel.Resolve(controllerType);
 
-            if (controller != null)
-            {
-                controller.ActionInvoker = _kernel.Resolve<IActionInvoker>();
-            }
-
             return controller;
         }
     }

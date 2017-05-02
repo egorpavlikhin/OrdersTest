@@ -34,6 +34,7 @@ ViewBag.Title = "Index";
                             <th>Дата создания</th>
                             <th>Подробное описание</th>
                             <th>Сумма</th>
+                            <th>Действие</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,6 +45,7 @@ ViewBag.Title = "Index";
                             <td>{{procurement.Created | ctime}}</td>
                             <td>{{procurement.Description}}</td>
                             <td>{{procurement.Total}}</td>
+                            <td><button data-toggle="modal" ng-click="edit(procurement.Id)" data-target="#edit-procurement" class="btn btn-primary">Ред.</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -102,7 +104,7 @@ ViewBag.Title = "Index";
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form method="POST" name="editItem" role="form" ng-submit="saveEdit()" ng-controller="listProcurements">
-                <input ng-model="form.id" type="hidden" placeholder="Name" name="name" class="form-control" />
+                <input ng-model="form.Id" type="hidden" placeholder="Name" name="name" class="form-control" />
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                     <h4 class="modal-title" id="myModalLabel">Редактировать закупку</h4>

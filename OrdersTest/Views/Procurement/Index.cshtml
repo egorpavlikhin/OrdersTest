@@ -3,31 +3,32 @@
 ViewBag.Title = "Index";
 }
 
-<div role="main" class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="pull-left">
-                <h1>Список закупок</h1>
-            </div>
-            <div class="pull-right" style="padding-top:30px">
-                <div style="display:inline-table">
-                    <div class="input-group">
-                        <input type="text" class="form-control ng-valid ng-dirty" placeholder="Поиск" ng-change="searchDB()" ng-model="searchText" name="table_search" title="" tooltip="" data-original-title="Введите больше 3-х символов">
-                        <span class="input-group-addon">Поиск</span>
-                        <span class="input-group-btn">
-                            <button class="btn btn-success" data-toggle="modal" data-target="#create-procurement">Создать закупку</button>
-                        </span>
-                    </div>
+<div ng-controller="listProcurements as data">
+    <div role="main" class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="pull-left">
+                    <h1>Список закупок</h1>
                 </div>
+                <div class="pull-right" style="padding-top:30px">
+                    <div style="display:inline-table">
+                        <div class="input-group">
+                            <input type="text" class="form-control ng-valid ng-dirty" placeholder="Поиск" ng-change="searchDB()" ng-model="searchText" name="table_search" title="" tooltip="" data-original-title="Введите больше 3-х символов">
+                            <span class="input-group-addon">Поиск</span>
+                            <span class="input-group-btn">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#create-procurement">Создать закупку</button>
+                            </span>
+                        </div>
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row" ng-controller="listProcurements as data">
-        <div class="col-lg-12">
-            <div>
-                <table class="table table-striped table-hover">
-                    <thead>
+        <div class="row">
+            <div class="col-lg-12">
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
                         <tr>
                             <th>Номер</th>
                             <th>Наименование</th>
@@ -36,10 +37,10 @@ ViewBag.Title = "Index";
                             <th>Сумма</th>
                             <th>Действие</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <tr ng-show="procurements.length <= 0"><td colspan="5" style="text-align: center;">Идет загрузка данных</td></tr>
-                        <tr ng-show="procurements.length > 0" class="ng-hide" dir-paginate="procurement in procurements|itemsPerPage:itemsPerPage" total-items="total_count" current-page="pageno">
+                        <tr ng-show="procurements.length > 0" class="ng-hide" dir-paginate="procurement in procurements|itemsPerPage:itemsPerPage track by procurement.Id" total-items="total_count" current-page="pageno">
                             <td>{{procurement.Id}}</td>
                             <td>{{procurement.Name}}</td>
                             <td>{{procurement.Created | ctime}}</td>
@@ -47,94 +48,98 @@ ViewBag.Title = "Index";
                             <td>{{procurement.Total}}</td>
                             <td><button data-toggle="modal" ng-click="edit(procurement.Id)" data-target="#edit-procurement" class="btn btn-primary">Ред.</button></td>
                         </tr>
-                    </tbody>
-                </table>
-                <dir-pagination-controls max-size="8"
-                                            direction-links="true"
-                                            boundary-links="true"
-                                            on-page-change="pageChanged(newPageNumber)">
-                </dir-pagination-controls>
+                        </tbody>
+                    </table>
+                    <dir-pagination-controls max-size="8"
+                                             direction-links="true"
+                                             boundary-links="true"
+                                             on-page-change="pageChanged(newPageNumber)">
+                    </dir-pagination-controls>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Create Modal -->
-<div class="modal fade" id="create-procurement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form method="POST" name="addItem" role="form" ng-submit="saveAdd()" ng-controller="listProcurements">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Новая закупка</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <strong>Наименование: </strong>
-                                <div class="form-group">
-                                    <input ng-model="form.Name" type="text" placeholder="Наименование" name="title" class="form-control" required />
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <strong>Подробное описание: </strong>
-                                <div class="form-group">
-                                    <textarea ng-model="form.Description" class="form-control">
-                            </textarea>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <strong>Сумма: </strong>
-                                <div class="form-group">
-                                    <input ng-model="form.Total" type="text" placeholder="Сумма" name="total" class="form-control" required />
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                        <button type="submit" ng-disabled="addItem.$invalid" class="btn btn-primary">Создать</button>
+    <!-- Create Modal -->
+    <div class="modal fade" id="create-procurement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" name="addItem" role="form" ng-submit="saveAdd()">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Новая закупка</h4>
                     </div>
-                </div>
-            </form>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <strong>Наименование: </strong>
+                                    <div class="form-group">
+                                        <input ng-model="form.Name" type="text" placeholder="Наименование" name="title" class="form-control" required />
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <strong>Подробное описание: </strong>
+                                    <div class="form-group">
+                                        <textarea ng-model="form.Description" class="form-control">
+                            </textarea>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <strong>Сумма: </strong>
+                                    <div class="form-group">
+                                        <input ng-model="form.Total" type="number" placeholder="Сумма" name="total" class="form-control" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                            <button type="submit" ng-disabled="addItem.$invalid" class="btn btn-primary">Создать</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-<!-- Edit Modal -->
-<div class="modal fade" id="edit-procurement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form method="POST" name="editItem" role="form" ng-submit="saveEdit()" ng-controller="listProcurements">
-                <input ng-model="form.Id" type="hidden" placeholder="Name" name="name" class="form-control" />
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Редактировать закупку</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <input ng-model="form.Title" type="text" placeholder="Наименование" name="title" class="form-control" required />
+    <!-- Edit Modal -->
+    <div class="modal fade" id="edit-procurement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" name="editItem" role="form" ng-submit="saveEdit()">
+                    <input ng-model="form.Id" type="hidden" placeholder="Name" name="id" class="form-control" />
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Редактировать закупку</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <strong>Наименование: </strong>
+                                    <div class="form-group">
+                                        <input ng-model="form.Name" type="text" placeholder="Наименование" name="name" class="form-control" required />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <textarea ng-model="form.Description" class="form-control">
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <strong>Подробное описание: </strong>
+                                    <div class="form-group">
+                                        <textarea ng-model="form.Description" class="form-control">
                             </textarea>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="form-group">
-                                    <input ng-model="form.Total" type="text" placeholder="Сумма" name="title" class="form-control" required />
+                                <div class="col-xs-12 col-sm-12 col-md-12">
+                                    <strong>Сумма: </strong>
+                                    <div class="form-group">
+                                        <input ng-model="form.Total" type="number" placeholder="Сумма" name="total" class="form-control" required />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                            <button type="submit" ng-disabled="editItem.$invalid" class="btn btn-primary create-crud">Сохранить</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                                <button type="submit" ng-disabled="editItem.$invalid" class="btn btn-primary create-crud">Сохранить</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>

@@ -1,5 +1,6 @@
 ﻿angular.module("ordersTest", []);
 var app = angular.module('ordersTest', ['angularUtils.directives.dirPagination']);
+
 app.filter('ctime', function () {
     return function (jsonDate) {
 
@@ -7,11 +8,12 @@ app.filter('ctime', function () {
         return date;
     };
 });
+
 app.controller('listProcurements', function ($scope, $http){
-    $scope.procurements = []; //declare an empty array
-    $scope.pageno = 1; // initialize page no to 1
+    $scope.procurements = []; 
+    $scope.pageno = 1; 
     $scope.total_count = 0;
-    $scope.itemsPerPage = 20; //this could be a dynamic value from a drop down
+    $scope.itemsPerPage = 20; 
 
     getResultsPage(1);
 
@@ -22,11 +24,13 @@ app.controller('listProcurements', function ($scope, $http){
     $scope.pageChanged = function (newPage) {
         getResultsPage(newPage);
     };
-
+    
     $scope.saveAdd = function () {
         $http.post('/api/procurement/create', $scope.form).then(function (response) {
-            $scope.procurements.push(response.data);
+            $scope.procurements.unshift(response.data);
+            $scope.procurements.pop();
             $(".modal").modal("hide");
+            $scope.form = {};
         });
     };
     $scope.edit = function(id) {
@@ -35,15 +39,16 @@ app.controller('listProcurements', function ($scope, $http){
             $scope.form = response.data;
         });
     };
-    $scope.saveEdit = function() {
-        $http.put('/api/procurement/' + $scope.form.id, $scope.form).then(function (response) {
+    $scope.saveEdit = function () {
+        $http.put('/api/procurement/' + $scope.form.Id, $scope.form).then(function (response) {
+            angular.extend($scope.procurements,
+            apiModifyTable($scope.procurements, response.data.Id, response.data));
             $(".modal").modal("hide");
-            $scope.procurements = apiModifyTable($scope.data, response.data.id, response.data);
+            $scope.form = {};
         });
     };
 
     function getResultsPage(pageNumber) {
-        // this is just an example, in reality this stuff should be in a service
         $http.get('/api/procurement/' + $scope.itemsPerPage + '/' + pageNumber)
             .then(function (result) {
                 $scope.procurements = result.data.Items;
@@ -52,10 +57,12 @@ app.controller('listProcurements', function ($scope, $http){
     }
 });
 function apiModifyTable(originalData, id, response) {
-    angular.forEach(originalData, function (item, key) {
-        if (item.id == id) {
-            originalData[key] = response;
+    for (key in originalData) {
+        if (originalData[key].Id === id) {
+            originalData.splice(key, 1);
+            originalData.splice(key, 0, response);
+            break;
         }
-    });
+    }
     return originalData;
 }

@@ -58,7 +58,7 @@ namespace OrdersTest.Controllers.API
         [HttpPost]
         [UnitOfWork]
         [ResponseType(typeof(Procurement))]
-        public async Task<IHttpActionResult> Index(ProcurementViewModel model)
+        public async Task<IHttpActionResult> Add(ProcurementViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -82,9 +82,10 @@ namespace OrdersTest.Controllers.API
         }
 
         [HttpPut]
+        [Route("{id:long}")]
         [UnitOfWork]
         [ResponseType(typeof(Procurement))]
-        public async Task<IHttpActionResult> Index(long id, ProcurementViewModel model)
+        public async Task<IHttpActionResult> Update(long id, ProcurementViewModel model)
         {
             if (id <= 0)
                 throw new HttpResponseException(HttpStatusCode.Forbidden);
@@ -94,7 +95,6 @@ namespace OrdersTest.Controllers.API
                 throw new HttpResponseException(HttpStatusCode.Forbidden);
             }
 
-            string userId = User.Identity.GetUserId();
             var procurement = procurementRepository.GetById(id);
             if (procurement == null)
             {

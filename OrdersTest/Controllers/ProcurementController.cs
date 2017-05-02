@@ -16,13 +16,8 @@ namespace OrdersTest.Controllers
     [RoutePrefix("procurement")]
     public class ProcurementController : Controller
     {
-        private IProcurementRepository procurementRepository;
-        private IUserProcurementRepository userProcurementRepository;
-
-        public ProcurementController(IProcurementRepository procurementRepository, IUserProcurementRepository userProcurementRepository)
+        public ProcurementController()
         {
-            this.procurementRepository = procurementRepository ?? throw new ArgumentNullException(nameof(procurementRepository));
-            this.userProcurementRepository = userProcurementRepository ?? throw new ArgumentNullException(nameof(userProcurementRepository));
         }
 
         [HttpGet]
